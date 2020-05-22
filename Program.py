@@ -2,6 +2,9 @@ import os
 import glob
 import codecs
 
+import ConfigurationUtils
+
+# TODO: transform in configurations
 core = "CORE"
 calculators = "CALCULATORS"
 flowcredit = "FLOWCREDIT"
@@ -61,8 +64,10 @@ try:
                         print("USE found.")
 
                     # convert file encoding to UTF-8
-                    
+
                     fileContent.encode('utf-8')
+
+                    # change USE to target database name
 
                     # save file
 
@@ -71,7 +76,7 @@ try:
 
                     # move files to QUA folder
 
-                    #TODO move files
+                    # TODO move files
     else:
         # files not exists
         print("No files found.")
