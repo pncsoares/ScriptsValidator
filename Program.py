@@ -5,15 +5,16 @@ import codecs
 import ConfigurationUtils
 
 # TODO: transform in configurations
-core = "CORE"
-calculators = "CALCULATORS"
-flowcredit = "FLOWCREDIT"
-collections = "COLLECTIONS"
-risk = "RISK"
-scoring = "SCORING"
-externalServices = "EXTERNALSERVICES"
+core = "ITSCREDITV17_CEMG_CORE"
+calculators = "ITSCREDITV17_CEMG_CALCULATORS"
+flowcredit = "ITSCREDIT_CEMG_FLOWCREDIT"
+collections = "ITSCREDITV17_CEMG_COLLECTIONS"
+risk = "ITSCREDITV17_CEMG_RISK"
+scoring = "ITSCREDITV17_CEMG_SCORING"
+externalServices = "ITSCREDITV17_CEMG_EXTERNALSERVICES"
 
 errors = False
+module = ""
 
 # open files in order
 
@@ -23,60 +24,66 @@ try:
     if glob.glob('INT/*.sql'):
         # files exists
         for filepath in glob.glob(os.path.join('INT', '*.sql')):
-            with codecs.open(filepath, "r") as sourceFile:
-                with codecs.open(filepath, "w", 'utf-8') as targetFile:
 
-                    fileContent = sourceFile.read()
-                    fileName = os.path.basename(filepath)
+            fileName = os.path.basename(filepath)
 
-                    print("\nOpening file " + fileName)
+            print("\nOpening file " + fileName)
 
-                    # verify USE based on file name
+            # verify USE based on file name
 
-                    if core in fileName:
-                        module = core
+            if core in fileName:
+                module = core
 
-                    elif calculators in fileName:
-                        module = calculators
+            elif calculators in fileName:
+                module = calculators
 
-                    elif flowcredit in fileName:
-                        module = flowcredit
+            elif flowcredit in fileName:
+                module = flowcredit
 
-                    elif collections in fileName:
-                        module = collections
+            elif collections in fileName:
+                module = collections
 
-                    elif risk in fileName:
-                        module = risk
+            elif risk in fileName:
+                module = risk
 
-                    elif scoring in fileName:
-                        module = scoring
+            elif scoring in fileName:
+                module = scoring
 
-                    elif externalServices in fileName:
-                        module = externalServices
+            elif externalServices in fileName:
+                module = externalServices
 
-                    hints = fileContent.count(' '.join(['USE', module]))
+            useDb = 'use ' + module
 
-                    if hints == 0:
-                        print("USE " + module + " added!")
-                    elif hints > 1:
-                        print("Multiple uses found.")
-                    else:
-                        print("USE found.")
+            with codecs.open(filepath, "rt") as file:
+                
+                fileContent = file.read()
 
-                    # convert file encoding to UTF-8
+                hints = fileContent.count(useDb.upper())
 
-                    fileContent.encode('utf-8')
+                if hints == 0:
+                    print(useDb + " added!")
+                elif hints > 1:
+                    print("Multiple uses found.")
+                else:
+                    print("USE found.")
 
-                    # change USE to target database name
+                fileContent = fileContent.replace(module, "Simuladores" + module).capitalize()
 
-                    # save file
+                # convert file encoding to UTF-8
+                
+                fileContent.encode('utf-8')
 
-                    targetFile.write(fileContent)
-                    print("File saved!")
+                # save file
 
-                    # move files to QUA folder
+                file.close()
+                print("File saved!")
 
-                    # TODO move files
+                # move files to QUA folder
+
+                # TODO move files
+
+            #with codecs.open(filepath, "w", 'utf-8') as targetFile:
+
     else:
         # files not exists
         print("No files found.")
